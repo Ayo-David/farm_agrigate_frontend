@@ -1,8 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Logo from '../../assets/images/logo.svg';
+import { useNavigation } from '@react-navigation/native';
+import { getAllUsers, login } from '@app/services/authServices';
+import database from '@app/database/database';
+import { showToast } from '@app/helpers/utils';
 
 const LoginScreen = () => {
+	const navigation = useNavigation();
+	const goto = (screen) => navigation.navigate(screen);
+
+	const [phone, setPhone] = useState('');
+	const [password, setPassword] = useState('');
+
+	const handleLogin = async () => {
+		console.log(`I'm hererererererer`);
+
+		try {
+			const user = await login(phone, password);
+
+			if (user.success) goto('HomeStack');
+			//goto('HomeStack');
+		} catch (error) {
+			console.log(`Error: ${error}`);
+			return showToast('Incorrect Login, try again!', 'error');
+		}
+	};
 	return (
 		<View style={styles.container}>
 			{/* Logo */}
@@ -22,10 +45,12 @@ const LoginScreen = () => {
 			<View style={styles.inputContainer}>
 				{/* Email Input */}
 				<TextInput
-					placeholder='Email'
+					placeholder='Phone'
 					style={styles.input}
 					placeholderTextColor='#aaa'
-					keyboardType='email-address'
+					value={phone}
+					inputMode='tel'
+					onChangeText={setPhone}
 				/>
 				{/* Password Input */}
 				<TextInput
@@ -33,18 +58,25 @@ const LoginScreen = () => {
 					style={styles.input}
 					placeholderTextColor='#aaa'
 					secureTextEntry
+					value={password}
+					onChangeText={setPassword}
 				/>
 			</View>
 
 			{/* Login Button */}
-			<TouchableOpacity style={styles.loginButton}>
+			<TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
 				<Text style={styles.loginButtonText}>Login</Text>
 			</TouchableOpacity>
 
 			{/* Forgot Password */}
-			<TouchableOpacity style={styles.forgotPassword}>
-				<Text style={styles.forgotPasswordText}>Forget Password</Text>
-			</TouchableOpacity>
+			<View style={styles.forgotPasswordCol}>
+				<TouchableOpacity style={styles.registerLink} onPress={() => goto('SignUpScreen')}>
+					<Text style={styles.forgotPasswordText}>Register</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={styles.forgotPassword}>
+					<Text style={styles.forgotPasswordText}>Forget Password</Text>
+				</TouchableOpacity>
+			</View>
 		</View>
 	);
 };
@@ -124,9 +156,16 @@ const styles = StyleSheet.create({
 		fontSize: 18,
 		fontWeight: 'bold',
 	},
+	registerLink: {
+		marginTop: 20,
+		marginRight: 20,
+	},
 	forgotPassword: {
 		marginTop: 20,
 	},
+
+	forgotPasswordCol: { flexDirection: 'row' },
+
 	forgotPasswordText: {
 		color: '#555',
 		fontSize: 14,

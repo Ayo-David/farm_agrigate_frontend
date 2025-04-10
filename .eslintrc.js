@@ -7,6 +7,7 @@ module.exports = {
 		'eslint:recommended',
 		'plugin:react/recommended',
 		'plugin:@typescript-eslint/recommended',
+		'plugin:prettier/recommended',
 		'prettier',
 	],
 	parserOptions: {
@@ -17,12 +18,15 @@ module.exports = {
 		sourceType: 'module',
 	},
 	rules: {
-		'prettier/prettier': 'warn',
+		'prettier/prettier': 'error',
 		'react/react-in-jsx-scope': 'off', // React is auto-imported in new projects
 		'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
 		'@typescript-eslint/no-var-requires': 'off',
 		'@typescript-eslint/no-require-imports': 'off',
 		'react/prop-types': 'off', // Disable prop-types as we use TypeScript
+	},
+	env: {
+		node: true,
 	},
 	settings: {
 		react: {

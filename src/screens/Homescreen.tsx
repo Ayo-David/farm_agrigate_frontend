@@ -8,14 +8,37 @@ import {
 	SafeAreaView,
 	ScrollView,
 } from 'react-native';
-import ToolIcon from '../../assets/images/toolsIcon.svg';
-import RecordIcon from '../../assets/images/recordIcon.svg';
-import HarvestIcon from '../../assets/images/harvestIcon.svg';
-import BillIcon from '../../assets/images/billIcon.svg';
-import AddIcon from '../../assets/images/addIcon.svg';
-const DashboardScreen = () => {
+import ToolIcon from '@assets/images/toolsIcon.svg';
+import RecordIcon from '@assets/images/recordIcon.svg';
+import HarvestIcon from '@assets/images/harvestIcon.svg';
+import BillIcon from '@assets/images/billIcon.svg';
+import AddIcon from '@assets/images/addIcon.svg';
+import { Navbar } from '@app/components';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { HomeStackParamList } from '@app/navigation/HomeStack';
+
+type GotoParamsType = {
+	[K in keyof HomeStackParamList]: {
+		screen: K;
+		param: HomeStackParamList[K];
+	};
+}[keyof HomeStackParamList];
+
+type NavigationPropType = {
+	navigation: NativeStackNavigationProp<HomeStackParamList>;
+};
+
+const HomeScreen = ({ navigation }: NavigationPropType) => {
+	const goto = (args: GotoParamsType) => navigation.navigate(args.screen, args.param);
+
 	return (
 		<SafeAreaView style={styles.container}>
+			<Navbar
+				title={'Home'}
+				//backIcon
+				// RightIcon={GearIcon}
+				// onRightPress={onIconPress}
+			/>
 			<ScrollView contentContainerStyle={styles.scrollContent}>
 				{/* Header Image */}
 				<Image
@@ -27,37 +50,54 @@ const DashboardScreen = () => {
 				{/* Grid Buttons */}
 				<View style={styles.gridContainer}>
 					{/* Button 1 */}
-					<TouchableOpacity style={styles.gridButton}>
+					<TouchableOpacity
+						style={styles.gridButton}
+						onPress={() => goto({ screen: 'RegisterFarmersScreen', param: undefined })}>
+						<AddIcon />
+						<Text style={styles.buttonText}>Registration</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						style={styles.gridButton}
+						onPress={() =>
+							goto({ screen: 'ProductScreen', param: { productType: 'P' } })
+						}>
 						<HarvestIcon />
 						<Text style={styles.buttonText}>Product</Text>
 					</TouchableOpacity>
 
 					{/* Button 2 */}
-					<TouchableOpacity style={styles.gridButton}>
+					<TouchableOpacity
+						style={styles.gridButton}
+						onPress={() =>
+							goto({ screen: 'ProductScreen', param: { productType: 'S' } })
+						}>
 						<ToolIcon />
 						<Text style={styles.buttonText}>Services</Text>
 					</TouchableOpacity>
 
 					{/* Button 3 */}
-					<TouchableOpacity style={styles.gridButton}>
+					<TouchableOpacity
+						style={styles.gridButton}
+						onPress={() => goto({ screen: 'InvoicesScreen', param: undefined })}>
 						<BillIcon />
 						<Text style={styles.buttonText}>Invoice</Text>
 					</TouchableOpacity>
 
 					{/* Button 4 */}
-					<TouchableOpacity style={styles.gridButton}>
-						<AddIcon />
-						<Text style={styles.buttonText}>Registration</Text>
-					</TouchableOpacity>
 
 					{/* Button 5 */}
-					<TouchableOpacity style={styles.gridButton}>
+					<TouchableOpacity
+						style={styles.gridButton}
+						onPress={() => goto({ screen: 'ComingSoonScreen', param: undefined })}>
 						<RecordIcon />
 						<Text style={styles.buttonText}>Records</Text>
 					</TouchableOpacity>
 
 					{/* Button 6 */}
-					<TouchableOpacity style={styles.gridButton}>
+					<TouchableOpacity
+						style={styles.gridButton}
+						onPress={() => goto({ screen: 'ComingSoonScreen', param: undefined })}>
 						<ToolIcon />
 						<Text style={styles.buttonText}>Settings</Text>
 					</TouchableOpacity>
@@ -67,7 +107,7 @@ const DashboardScreen = () => {
 	);
 };
 
-export default DashboardScreen;
+export default HomeScreen;
 
 const styles = StyleSheet.create({
 	container: {
